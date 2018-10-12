@@ -1,0 +1,13 @@
+server:
+  port: 8081
+
+artistInformationService:
+  url: "http://musicbrainz.org/ws/2/artist/%s?&fmt=json&inc=url-rels+release-groups"
+
+albumCoverService:
+  url: "http://coverartarchive.org/release-group/%s"
+
+artistDescriptionService:
+  url: "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key=%s&format=json&mbid=%s"
+  apiKey: "f9c5348552908c48c5cca6d45f417959"
+
