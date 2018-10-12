@@ -8,23 +8,23 @@ import com.amonge.sandbox.musicartisapi.pojo.incoming.MusicBrainzArtist;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ArtistDescriptionServiceTest {
-
     private RestTemplateBuilder restTemplateBuilderMock;
     private RestTemplate restTemplateMock;
     private GlobalConfig globalConfigMock;
-
 
     @Before
     public void setup() {
@@ -32,10 +32,8 @@ public class ArtistDescriptionServiceTest {
         restTemplateMock = mock(RestTemplate.class);
         globalConfigMock = mock(GlobalConfig.class);
 
-
         // RestTemplate mock setup
         when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
-        when(restTemplateMock.getForObject(anyString(), any())).thenReturn(getServiceResponseMock());
 
         // GlobalConfig mock setup
         when(globalConfigMock.getArtistDescriptionServiceUrl()).thenReturn("some url");
@@ -44,12 +42,38 @@ public class ArtistDescriptionServiceTest {
 
     @Test
     public void getArtistDescription() throws ExecutionException, InterruptedException {
+        when(restTemplateMock.getForObject(anyString(), any())).thenReturn(getServiceResponseMock());
         MusicBrainzArtist inputTestArtist = getArtistMock("some id");
+
         ArtistDescriptionService service = new ArtistDescriptionService(restTemplateBuilderMock, globalConfigMock);
 
         CompletableFuture<String> artistDescriptionFuture = service.getArtistDescription(inputTestArtist);
 
         assertEquals("some description", artistDescriptionFuture.get());
+    }
+
+    @Test
+    public void getArtistDescription_ExternalServiceException() throws ExecutionException, InterruptedException {
+        when(restTemplateMock.getForObject(anyString(), any())).thenThrow(HttpClientErrorException.class);
+        MusicBrainzArtist inputTestArtist = getArtistMock("some id");
+
+        ArtistDescriptionService service = new ArtistDescriptionService(restTemplateBuilderMock, globalConfigMock);
+
+        CompletableFuture<String> artistDescriptionFuture = service.getArtistDescription(inputTestArtist);
+
+        assertNull(artistDescriptionFuture.get());
+    }
+
+    @Test
+    public void getArtistDescription_InternalException() throws ExecutionException, InterruptedException {
+        when(restTemplateMock.getForObject(anyString(), any())).thenThrow(RuntimeException.class);
+        MusicBrainzArtist inputTestArtist = getArtistMock("some id");
+
+        ArtistDescriptionService service = new ArtistDescriptionService(restTemplateBuilderMock, globalConfigMock);
+
+        CompletableFuture<String> artistDescriptionFuture = service.getArtistDescription(inputTestArtist);
+
+        assertNull(artistDescriptionFuture.get());
     }
 
     private MusicBrainzArtist getArtistMock(String artistId) {
