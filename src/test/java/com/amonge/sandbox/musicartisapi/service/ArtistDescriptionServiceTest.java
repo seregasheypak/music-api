@@ -42,22 +42,25 @@ public class ArtistDescriptionServiceTest {
 
     @Test
     public void getArtistDescription() throws ExecutionException, InterruptedException {
-        when(restTemplateMock.getForObject(anyString(), any())).thenReturn(getServiceResponseMock());
         MusicBrainzArtist inputTestArtist = getArtistMock("some id");
+        LastFMResponse serviceResponseMock = getServiceResponseMock();
 
+        when(restTemplateMock.getForObject(anyString(), any())).thenReturn(getServiceResponseMock());
         ArtistDescriptionService service = new ArtistDescriptionService(restTemplateBuilderMock, globalConfigMock);
+
 
         CompletableFuture<String> artistDescriptionFuture = service.getArtistDescription(inputTestArtist);
 
-        assertEquals("some description", artistDescriptionFuture.get());
+        assertEquals(serviceResponseMock.getArtist().getBio().getSummary(), artistDescriptionFuture.get());
     }
 
     @Test
     public void getArtistDescription_ExternalServiceException() throws ExecutionException, InterruptedException {
-        when(restTemplateMock.getForObject(anyString(), any())).thenThrow(HttpClientErrorException.class);
         MusicBrainzArtist inputTestArtist = getArtistMock("some id");
 
+        when(restTemplateMock.getForObject(anyString(), any())).thenThrow(HttpClientErrorException.class);
         ArtistDescriptionService service = new ArtistDescriptionService(restTemplateBuilderMock, globalConfigMock);
+
 
         CompletableFuture<String> artistDescriptionFuture = service.getArtistDescription(inputTestArtist);
 
@@ -66,10 +69,11 @@ public class ArtistDescriptionServiceTest {
 
     @Test
     public void getArtistDescription_InternalException() throws ExecutionException, InterruptedException {
-        when(restTemplateMock.getForObject(anyString(), any())).thenThrow(RuntimeException.class);
         MusicBrainzArtist inputTestArtist = getArtistMock("some id");
+        when(restTemplateMock.getForObject(anyString(), any())).thenThrow(RuntimeException.class);
 
         ArtistDescriptionService service = new ArtistDescriptionService(restTemplateBuilderMock, globalConfigMock);
+
 
         CompletableFuture<String> artistDescriptionFuture = service.getArtistDescription(inputTestArtist);
 
