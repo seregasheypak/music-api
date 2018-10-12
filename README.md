@@ -1,6 +1,10 @@
 # music-api
 Simple Rest API to get information about an specific music artist.
 
+The API takes a ​MBID (MusicBrainz Identifier)​ and return a JSON containing the following:
+ * A list of all albums the artist has released and links to its corresponding album cover art.
+ * A description of the artist fetched from Genius.com
+
 ## Tech specs
 * Java
 * Maven 3
@@ -14,7 +18,7 @@ mvn spring-boot:run
 ```
 This will use the application's default properties file (application.yml) and will start the RestAPI on http://localhost:8081
 
-A properties file for production enviroment is provided (application-prod.yml. This overwrites the server to listen to port 8080 instead of 8081. Just especify "prod" profile when running the application:
+A properties file for production environment is provided (application-prod.yml. This overwrites the server to listen to port 8080 instead of 8081. Just especify "prod" profile when running the application:
 
 ```
 mvn spring-boot: run -Dspring-boot.run.profiles=prod

@@ -9,5 +9,6 @@ albumCoverService:
 
 artistDescriptionService:
   url: "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key=%s&format=json&mbid=%s"
-  apiKey: "f9c5348552908c48c5cca6d45f417959"
 
+  # This should be store somewhere else, leaving it here for testing purposes.
+  apiKey: "f9c5348552908c48c5cca6d45f417959"
