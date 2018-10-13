@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class ArtistNotFoundException extends RuntimeException {
 
-    public ArtistNotFoundException(String message) {
-        super(message);
-    }
+    // no used
+//    public ArtistNotFoundException(String message) {
+//        super(message);
+//    }
 
     public ArtistNotFoundException(String message, Throwable throwable) {
         super(message, throwable);

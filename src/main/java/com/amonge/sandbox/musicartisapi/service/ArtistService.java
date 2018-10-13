@@ -26,8 +26,8 @@ public class ArtistService {
 
     private final RestTemplate restTemplate;
     private final GlobalConfig config;
-    private AlbumCoverImageService albumCoverImageService;
-    private ArtistDescriptionService artistDescriptionService;
+    private final AlbumCoverImageService albumCoverImageService;
+    private final ArtistDescriptionService artistDescriptionService;
 
     public ArtistService(RestTemplateBuilder restTemplateBuilder, GlobalConfig config, AlbumCoverImageService albumCoverImageService, ArtistDescriptionService artistDescriptionService) {
         this.restTemplate = restTemplateBuilder.build();
@@ -53,7 +53,7 @@ public class ArtistService {
     }
 
     private CompletableFuture<String> getArtistDescription(String artistId) {
-        return getArtistInformation(artistId).thenCompose(artistInformation -> artistDescriptionService.getArtistDescription(artistInformation));
+        return getArtistInformation(artistId).thenCompose(artistDescriptionService::getArtistDescription);
     }
 
 
@@ -66,7 +66,7 @@ public class ArtistService {
             } catch (HttpClientErrorException exception) {
                 HttpStatus statusCode = exception.getStatusCode();
 
-                if (statusCode.is4xxClientError()) {
+                if (statusCode.is4xxClientError()) { // will code be printed to log? can it help to determine a problem during log analysis in ELK / Splunk / Whatever
                     LOG.warn("Unable to find artist from [url = {}] for [artist = {}]", url, artistId, exception);
                     throw new ArtistNotFoundException("Unable to get information for artist: " + artistId, exception);
                 } else {

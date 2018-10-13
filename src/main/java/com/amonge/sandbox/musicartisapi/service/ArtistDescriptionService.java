@@ -35,6 +35,8 @@ public class ArtistDescriptionService {
                 .thenApply(response -> response.getArtist().getBio().getSummary())
                 .exceptionally( ex -> {
                     LOG.warn("Unable to get description from [url = {}] for [artist = {}]", url, artist.getId(), ex);
+
+                    // can Optional be better here?
                     return null;
                 });
     }

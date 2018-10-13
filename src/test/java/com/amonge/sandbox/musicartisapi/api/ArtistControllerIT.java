@@ -32,7 +32,7 @@ public class ArtistControllerIT {
     private ArtistController artistController;
 
     @Before
-    public void setup() throws Exception {
+    public void setup() /*throws Exception*/ {
         this.mockMvc = standaloneSetup(this.artistController).build();
     }
 

@@ -42,7 +42,7 @@ public class AlbumCoverImageService {
 
         // When all futures are completed, get the results and collect them in a list
         return allFuturesFuture.thenApply(v -> allAlbumsCoverInfoFutures.stream()
-                .map(albumCoverFuture -> albumCoverFuture.join())
+                .map(CompletableFuture::join)
                 .collect(Collectors.toList()));
     }
 
